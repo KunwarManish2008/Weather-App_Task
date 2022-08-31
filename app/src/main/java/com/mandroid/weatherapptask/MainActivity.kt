@@ -19,6 +19,9 @@ class MainActivity : AppCompatActivity() {
 
         val weatherProvider = WeatherLibHelper(BuildConfig.API_KEY)
 
+        weatherProvider.setUnits("imperial")
+        weatherProvider.setLanguage("en")
+
         findViewById<Button>(R.id.b1).setOnClickListener {
             weatherProvider.getCurrentWeatherByCity("delhi", object : WeatherResponseCallback {
                 override fun onSuccess(currentWeather: WeatherDto) {
