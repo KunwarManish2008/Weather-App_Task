@@ -23,7 +23,7 @@ allprojects {
 #### Step 2 : Download via ```Gradle```:
 
 ```java
-implementation 'com.github.KunwarManish2008:Weather-App_Task:V1.0.0'
+implementation 'com.github.KunwarManish2008:Weather-App_Task:V1.0.1'
 
 ```
 
