@@ -34,25 +34,26 @@ implementation 'com.github.KunwarManish2008:Weather-App_Task:V1.0.0'
 #### Instantiate Class With Your OpenWeatherMap Api Key
 
 ``` kotlin 
-val helper = OpenWeatherMapHelper(getString(R.string.OPEN_WEATHER_MAP_API_KEY))
+val weatherProvider = WeatherLibHelper(BuildConfig.API_KEY)
 ```
 
 #### Set your Units (Optional, STANDARD by default)
 
 ``` kotlin
-helper.units = Units.IMPERIAL
+weatherProvider.setUnits("imperial")
 ```
 
 ##### Unit Options: 
 
-1. ```Units.IMPERIAL (Fahrenheit)```
+1. ```imperial (Fahrenheit)```
 
-2. ```Units.METRIC (Celsius)```
+2. ```metric (Celsius)```
+3. ```standard```
 
 #### Set your Language (ENGLISH by default)
 
 ``` kotlin
-helper.language = Languages.ENGLISH
+helper.setLanguage("en")
 ```
 
 ## Features
@@ -61,165 +62,69 @@ helper.language = Languages.ENGLISH
 ### (1) Current Weather
 #### Get current weather by City Name:
 
-```java
- helper.getCurrentWeatherByCityName("Accra", new CurrentWeatherCallback() {
-     @Override
-     public void onSuccess(CurrentWeather currentWeather) {
-         Log.v(TAG, "Coordinates: " + currentWeather.getCoord().getLat() + ", "+currentWeather.getCoord().getLon() +"\n"
-                         +"Weather Description: " + currentWeather.getWeather().get(0).getDescription() + "\n"
-                         +"Temperature: " + currentWeather.getMain().getTempMax()+"\n"
-                         +"Wind Speed: " + currentWeather.getWind().getSpeed() + "\n"
-                         +"City, Country: " + currentWeather.getName() + ", " + currentWeather.getSys().getCountry()
-         );
-     }
+```kotlin
+ weatherProvider.getCurrentWeatherByCity("delhi", object : WeatherResponseCallback {
+                override fun onSuccess(currentWeather: WeatherDto) {
+                    Log.d("resp", "$currentWeather")
+                }
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
+                override fun onFailure(throwable: Throwable) {
+                    throwable.message?.let { it1 -> Log.d("resp", it1) }
+                }
+            })
 ```
 
-#### Get current weather by City ID:
-```java
- helper.getCurrentWeatherByCityID("524901", new CurrentWeatherCallback() {
-     @Override
-     public void onSuccess(CurrentWeather currentWeather) {
-         Log.v(TAG, "Coordinates: " + currentWeather.getCoord().getLat() + ", "+currentWeather.getCoord().getLon() +"\n"
-                         +"Weather Description: " + currentWeather.getWeather().get(0).getDescription() + "\n"
-                         +"Temperature: " + currentWeather.getMain().getTempMax()+"\n"
-                         +"Wind Speed: " + currentWeather.getWind().getSpeed() + "\n"
-                         +"City, Country: " + currentWeather.getName() + ", " + currentWeather.getSys().getCountry()
-         );
-     }
-
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
-```
 #### Get current weather by Geographic Coordinates:
 
-```java
- helper.getCurrentWeatherByGeoCoordinates(5.6037, 0.1870, new CurrentWeatherCallback() {
-     @Override
-     public void onSuccess(CurrentWeather currentWeather) {
-         Log.v(TAG, "Coordinates: " + currentWeather.getCoord().getLat() + ", "+currentWeather.getCoord().getLon() +"\n"
-                         +"Weather Description: " + currentWeather.getWeather().get(0).getDescription() + "\n"
-                         +"Temperature: " + currentWeather.getMain().getTempMax()+"\n"
-                         +"Wind Speed: " + currentWeather.getWind().getSpeed() + "\n"
-                         +"City, Country: " + currentWeather.getName() + ", " + currentWeather.getSys().getCountry()
-         );
-     }
+```kotlin
+weatherProvider.getCurrentWeatherByLocation(139.0,
+                35.0,
+                object : WeatherResponseCallback {
+                    override fun onSuccess(currentWeather: WeatherDto) {
+                        Log.d("resp", "$currentWeather")
+                    }
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
+                    override fun onFailure(throwable: Throwable) {
+                        throwable.message?.let { it1 -> Log.d("resp", it1) }
+                    }
+                })
 ```
-#### Get current weather by Zip Code:
-```java
- helper.getCurrentWeatherByZipCode("90003", new CurrentWeatherCallback() {
-     @Override
-     public void onSuccess(CurrentWeather currentWeather) {
-         Log.v(TAG, "Coordinates: " + currentWeather.getCoord().getLat() + ", "+currentWeather.getCoord().getLon() +"\n"
-                         +"Weather Description: " + currentWeather.getWeather().get(0).getDescription() + "\n"
-                         +"Temperature: " + currentWeather.getMain().getTempMax()+"\n"
-                         +"Wind Speed: " + currentWeather.getWind().getSpeed() + "\n"
-                         +"City, Country: " + currentWeather.getName() + ", " + currentWeather.getSys().getCountry()
-         );
-     }
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
-```
-### (2) 5 day / 3 hour forecast
-#### Get three hour forecast by City Name:
-```java
- helper.getThreeHourForecastByCityName("Pretoria", new ThreeHourForecastCallback() {
-     @Override
-     public void onSuccess(ThreeHourForecast threeHourForecast) {
-         Log.v(TAG, "City/Country: "+ threeHourForecast.getCity().getName() + "/" + threeHourForecast.getCity().getCountry() +"\n"
-                         +"Forecast Array Count: " + threeHourForecast.getCnt() +"\n"
-                         //For this example, we are logging details of only the first forecast object in the forecasts array
-                         +"First Forecast Date Timestamp: " + threeHourForecast.getList().get(0).getDt() +"\n"
-                         +"First Forecast Weather Description: " + threeHourForecast.getList().get(0).getWeather().get(0).getDescription()+ "\n"
-                         +"First Forecast Max Temperature: " + threeHourForecast.getList().get(0).getMain().getTempMax()+"\n"
-                         +"First Forecast Wind Speed: " + threeHourForecast.getList().get(0).getWind().getSpeed() + "\n"
-         );
-     }
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
-```
-#### Get three hour forecast by City ID:
-```java
- helper.getThreeHourForecastByCityID("524901", new ThreeHourForecastCallback() {
-     @Override
-     public void onSuccess(ThreeHourForecast threeHourForecast) {
-         Log.v(TAG, "City/Country: "+ threeHourForecast.getCity().getName() + "/" + threeHourForecast.getCity().getCountry() +"\n"
-                         +"Forecast Array Count: " + threeHourForecast.getCnt() +"\n"
-                         //For this example, we are logging details of only the first forecast object in the forecasts array
-                         +"First Forecast Date Timestamp: " + threeHourForecast.getList().get(0).getDt() +"\n"
-                         +"First Forecast Weather Description: " + threeHourForecast.getList().get(0).getWeather().get(0).getDescription()+ "\n"
-                         +"First Forecast Max Temperature: " + threeHourForecast.getList().get(0).getMain().getTempMax()+"\n"
-                         +"First Forecast Wind Speed: " + threeHourForecast.getList().get(0).getWind().getSpeed() + "\n"
-         );
-     }
+#### Get forecast for 1-16 days one timestamp per day by City Name (parameters: city name, count of days):
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
-```
-#### Get three hour forecast by Geographic Coordinates:
-```java
- helper.getThreeHourForecastByGeoCoordinates(6.5244,3.3792, new ThreeHourForecastCallback() {
-     @Override
-     public void onSuccess(ThreeHourForecast threeHourForecast) {
-         Log.v(TAG, "City/Country: "+ threeHourForecast.getCity().getName() + "/" + threeHourForecast.getCity().getCountry() +"\n"
-                         +"Forecast Array Count: " + threeHourForecast.getCnt() +"\n"
-                         //For this example, we are logging details of only the first forecast object in the forecasts array
-                         +"First Forecast Date Timestamp: " + threeHourForecast.getList().get(0).getDt() +"\n"
-                         +"First Forecast Weather Description: " + threeHourForecast.getList().get(0).getWeather().get(0).getDescription()+ "\n"
-                         +"First Forecast Max Temperature: " + threeHourForecast.getList().get(0).getMain().getTempMax()+"\n"
-                         +"First Forecast Wind Speed: " + threeHourForecast.getList().get(0).getWind().getSpeed() + "\n"
-         );
-     }
+```kotlin
+ weatherProvider.getWeatherForecastByCity("Delhi", 6, object : ForecastResponseCallback {
+                override fun onSuccess(currentWeather: WeatherForecastDto) {
+                    Log.d("resp", "$currentWeather")
+                }
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
-```
-#### Get three hour forecast by Zip Code:
-```java
- helper.getThreeHourForecastByZipCode("94040", new ThreeHourForecastCallback() {
-     @Override
-     public void onSuccess(ThreeHourForecast threeHourForecast) {
-         Log.v(TAG, "City/Country: "+ threeHourForecast.getCity().getName() + "/" + threeHourForecast.getCity().getCountry() +"\n"
-                         +"Forecast Array Count: " + threeHourForecast.getCnt() +"\n"
-                         //For this example, we are logging details of only the first forecast object in the forecasts array
-                         +"First Forecast Date Timestamp: " + threeHourForecast.getList().get(0).getDt() +"\n"
-                         +"First Forecast Weather Description: " + threeHourForecast.getList().get(0).getWeather().get(0).getDescription()+ "\n"
-                         +"First Forecast Max Temperature: " + threeHourForecast.getList().get(0).getMain().getTempMax()+"\n"
-                         +"First Forecast Wind Speed: " + threeHourForecast.getList().get(0).getWind().getSpeed() + "\n"
-         );
-     }
+                override fun onFailure(throwable: Throwable?) {
+                    if (throwable != null) {
+                        throwable.message?.let { it1 -> Log.d("resp", it1) }
+                    }
+                }
 
-     @Override
-     public void onFailure(Throwable throwable) {
-         Log.v(TAG, throwable.getMessage());
-     }
- });
+            })
 ```
+#### Get forecast for 1-16 days one timestamp per day by geographic coordinates. (parameters: longitude, latitude, count of days)
+```kotlin
+  weatherProvider.getWeatherForecastByLocation(139.0,
+                35.0,
+                6,
+                object : ForecastResponseCallback {
+                    override fun onSuccess(currentWeather: WeatherForecastDto) {
+                        Log.d("resp", "$currentWeather")
+                    }
+
+                    override fun onFailure(throwable: Throwable?) {
+                        if (throwable != null) {
+                            throwable.message?.let { it1 -> Log.d("resp", it1) }
+                        }
+                    }
+
+                })
+        }
+```
+
+
