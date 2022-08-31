@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val weatherProvider = WeatherLibHelper("1c0977973433bc2ad2806cf479f92c27")
+        val weatherProvider = WeatherLibHelper(BuildConfig.API_KEY)
 
         findViewById<Button>(R.id.b1).setOnClickListener {
             weatherProvider.getCurrentWeatherByCity("delhi", object : WeatherResponseCallback {
